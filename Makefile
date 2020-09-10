@@ -5,18 +5,21 @@ CPP_FREEBSD := -stdlib=libc++ -I/usr/local/include -L/usr/local/lib
 VER_64 := v10.20.1
 VER_72 := v12.16.3
 VER_79 := v13.14.0
+VER_83 := v14.5.0
 
 default:
 	make targets
 	NODE=targets/node-$(VER_64) ABI=64 make `(uname -s)`
 	NODE=targets/node-$(VER_72) ABI=72 make `(uname -s)`
 	NODE=targets/node-$(VER_79) ABI=79 make `(uname -s)`
+	NODE=targets/node-$(VER_83) ABI=83 make `(uname -s)`
 	for f in dist/bindings/*.node; do chmod +x $$f; done
 targets:
 	mkdir targets
 	curl https://nodejs.org/dist/$(VER_64)/node-$(VER_64)-headers.tar.gz | tar xz -C targets -f -
 	curl https://nodejs.org/dist/$(VER_72)/node-$(VER_72)-headers.tar.gz | tar xz -C targets -f -
 	curl https://nodejs.org/dist/$(VER_79)/node-$(VER_79)-headers.tar.gz | tar xz -C targets -f -
+	curl https://nodejs.org/dist/$(VER_83)/node-$(VER_83)-headers.tar.gz | tar xz -C targets -f -
 
 Linux:
 	g++ $(CPP_SHARED) -static-libstdc++ -static-libgcc -I $$NODE/include/node -I $$NODE/src -I $$NODE/deps/uv/include -I $$NODE/deps/v8/include -I $$NODE/deps/openssl/openssl/include -I $$NODE/deps/zlib -s -o dist/bindings/cws_linux_$$ABI.node
